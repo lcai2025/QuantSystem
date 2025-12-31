@@ -1,0 +1,66 @@
+# config.yaml (V2.2)
+
+# --- 系统基础 ---
+system:
+  project_root: "."
+  log_level: "INFO"
+  n_jobs: 8                     # 并行核心数
+  timezone: "Asia/Shanghai"
+
+# --- 存储路径 (严格对应目录结构) ---
+storage:
+  # L1: 原子层
+  raw_market: "./data/raw/market"
+  raw_finance: "./data/raw/finance"
+  
+  # L3: 视图层
+  view_ts: "./data/app_cache/ts_data"
+  view_cs: "./data/app_cache/cs_data"
+  
+  # Target: Qlib
+  qlib_bin: "./data/qlib_bin"
+  
+  # Meta & Logs
+  task_db: "./meta/task_status.db"
+  log_file: "./logs/system.log"
+
+# --- 模块 1.1: 数据源 (Wind) ---
+wind:
+  enabled: true
+  retry_limit: 3
+  batch_size: 50                # 单次请求股票数
+  request_gap: 0.5              # 请求间隔(秒), 防止封号
+
+# --- 模块 1.2: 字段映射 (Wind -> Internal) ---
+# 将字段映射直接写在配置里，便于动态修改
+schema:
+  # 行情字段映射
+  market_map:
+    OPEN: "open"
+    HIGH: "high"
+    LOW: "low"
+    CLOSE: "close"
+    VOLUME: "volume"
+    AMT: "amount"
+    VWAP: "vwap"
+    ADJFACTOR: "adjfactor"
+    PCT_CHG: "pct_chg"
+  
+  # 财务字段映射 (WSS)
+  finance_map:
+    NET_PROFIT_IS: "net_profit"       # 归母净利润
+    TOT_ASSETS: "total_assets"        # 总资产
+    TOT_EQUITY: "total_equity"        # 股东权益
+    S_VAL_MV: "total_mv"              # 总市值
+    DQ_MV: "float_mv"                 # 流通市值 (Barra权重)
+
+# --- 数据范围 ---
+scope:
+  start_date: "2019-01-01"
+  end_date: "auto"              # auto = current date
+  universe_path: "all"          # all = 全A股
+
+# --- Phase 2 预留 ---
+barra:
+  risk_factors: ["size", "mom", "vol", "liq", "value"]
+
